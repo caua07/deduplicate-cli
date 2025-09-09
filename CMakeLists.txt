@@ -7,6 +7,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# --- Static Linking Configuration ---
+# This tells CMake's FindOpenSSL module to look for and use the static libraries
+# (.a) instead of the dynamic ones (.so, .dylib). This is crucial for creating
+# a portable executable with no external OpenSSL dependency.
+set(OPENSSL_USE_STATIC_LIBS TRUE)
+
 # Find required packages
 find_package(OpenSSL REQUIRED)
 
@@ -16,7 +22,7 @@ find_package(OpenSSL REQUIRED)
 
 # Create the nodupli_lib library from its source files.
 # We include nodupli.h here to make sure it appears in IDEs.
-add_library(nodupli_lib nodupli.cpp nodupli.h)
+add_library(nodupli_lib src/nodupli.cpp src/nodupli.h)
 
 # Link the library to its dependencies.
 target_link_libraries(nodupli_lib PRIVATE OpenSSL::Crypto)
@@ -31,7 +37,7 @@ target_include_directories(nodupli_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # ----------------------------------------------------------------------------
 
 # Create the main executable.
-add_executable(deduplicate-cmd main.cpp)
+add_executable(deduplicate-cmd src/main.cpp)
 
 # Link the executable to the core library.
 target_link_libraries(deduplicate-cmd PRIVATE nodupli_lib)
@@ -49,12 +55,39 @@ install(TARGETS deduplicate-cmd
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Install the library to the standard library directory (e.g., /usr/local/lib).
-install(TARGETS nodupli_lib
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+# We don't need to install the library or headers for a binary release.
+# You can uncomment these if you want to provide a developer package.
+# install(TARGETS nodupli_lib
+#     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+# )
+# install(FILES nodupli.h
+#     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+# )
+
+# ----------------------------------------------------------------------------
+# Packaging with CPack
+# ----------------------------------------------------------------------------
+
+# Install the README and LICENSE files to the root of the package.
+install(FILES 
+    ${CMAKE_CURRENT_SOURCE_DIR}/README.md
+    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+    DESTINATION .
 )
 
-# Install the public header file to the standard include directory (e.g., /usr/local/include).
-install(FILES nodupli.h
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A CLI tool for finding and removing duplicate files.")
+set(CPACK_PACKAGE_VENDOR "cauaeyer")
+set(CPACK_PACKAGE_CONTACT "cauaeyer")
+
+# Use the ZIP generator for creating the archive.
+# Other options include TGZ, etc.
+set(CPACK_GENERATOR "ZIP")
+
+# This ensures the package has a top-level directory, e.g., "deduplicate-1.0-Darwin".
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CMAKE_SYSTEM_NAME}")
+set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
+
+
+include(CPack)
