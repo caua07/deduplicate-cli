@@ -1,3 +1,4 @@
+```
       _          _             _ _           _       _ 
      | |        | |           | (_)         | |     | |
    __| | ___  __| |_   _ _ __ | |_  ___ __ _| |_ ___| |
@@ -6,5 +7,6 @@
   \__,_|\___|\__,_|\__,_| .__/|_|_|\___\__,_|\__\___(_)
                         | |                            
                         |_|                            
+```                
                         
 Blazing light, intuitive and complete cli tool for managing duplicates in your file system!
