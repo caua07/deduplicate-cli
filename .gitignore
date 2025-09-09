@@ -1,0 +1,15 @@
+/build/
+
+*.exe
+*.out
+*.a
+*.so
+*.dll
+
+*.o
+*.obj
+
+.DS_Store
+
+.vscode/
+.idea/
