@@ -37,10 +37,10 @@ target_include_directories(nodupli_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # ----------------------------------------------------------------------------
 
 # Create the main executable.
-add_executable(deduplicate-cmd src/main.cpp)
+add_executable(deduplicate src/main.cpp)
 
 # Link the executable to the core library.
-target_link_libraries(deduplicate-cmd PRIVATE nodupli_lib)
+target_link_libraries(deduplicate PRIVATE nodupli_lib)
 
 # ----------------------------------------------------------------------------
 # Installation
@@ -51,7 +51,7 @@ target_link_libraries(deduplicate-cmd PRIVATE nodupli_lib)
 include(GNUInstallDirs)
 
 # Install the main executable to the standard binary directory (e.g., /usr/local/bin).
-install(TARGETS deduplicate-cmd
+install(TARGETS deduplicate
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
@@ -86,8 +86,8 @@ set(CPACK_PACKAGE_CONTACT "cauaeyer")
 set(CPACK_GENERATOR "ZIP")
 
 # This ensures the package has a top-level directory, e.g., "deduplicate-1.0-Darwin".
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CMAKE_SYSTEM_NAME}")
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-macos-arm64")
 set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
 
-
+set(CPACK_PACKAGE_DIRECTORY "${CMAKE_SOURCE_DIR}/dist")
 include(CPack)
