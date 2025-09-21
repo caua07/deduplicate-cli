@@ -15,6 +15,8 @@ add_executable(deduplicate src/main.cpp)
 
 target_link_libraries(deduplicate PRIVATE nodupli_lib)
 
+find_package(TBB REQUIRED)
+target_link_libraries(deduplicate PRIVATE TBB::tbb)
 
 include(GNUInstallDirs)
 

@@ -11,57 +11,18 @@
                         
 Blazing light, intuitive and complete cli tool for managing duplicates in your file system!
 
-## Features
+## For Users
 
-*   **Find duplicate files:** Scans a directory recursively to find files with identical content.
-*   **Interactive deletion:** Provides an interactive interface to review groups of duplicate files and decide which ones to delete.
-*   **Safe deletion:** Asks for final confirmation before deleting any files.
-*   **Efficient:** First compares files by size and then by SHA256 hash to minimize I/O operations.
+### Installation
 
-## Getting Started
+You can download the latest pre-compiled binary for your system from the [releases page](https://github.com/cauaeyer/deduplicate-cli/releases).
 
-### Prerequisites
-
-*   **CMake:** A C++ compiler that supports C++20.
-*   **OpenSSL:** The program depends on the OpenSSL library for hashing files.
-
-You can install the dependencies on a Debian-based system with:
-
-```bash
-sudo apt-get install build-essential cmake libssl-dev
-```
-
-### Building
-
-1.  Clone the repository:
-
-    ```bash
-    git clone https://github.com/your-username/nodupli.git
-    cd nodupli
-    ```
-
-2.  Create a build directory:
-
-    ```bash
-    mkdir build
-    cd build
-    ```
-
-3.  Run CMake and build the project:
-
-    ```bash
-    cmake ..
-    make
-    ```
-
-The executable will be created in the `build` directory with the name `deduplicate-cmd`.
-
-## Usage
+### Usage
 
 To scan a directory, run the executable with the path to the directory as an argument:
 
 ```bash
-./build/deduplicate-cmd /path/to/your/directory
+./deduplicate /path/to/your/directory
 ```
 
 If you don't provide a path, it will scan the current directory.
@@ -76,6 +37,60 @@ The program will guide you through the process of deleting duplicate files. For 
 *   **`q`:** Quit the interactive session.
 
 After reviewing all the groups, you will be asked for a final confirmation before any files are deleted.
+
+## For Developers
+
+### Prerequisites
+
+*   **CMake:** A C++ compiler that supports C++20.
+*   **OpenSSL:** The program depends on the OpenSSL library for hashing files.
+*   **TBB (Threading Building Blocks):** Required for multi-threading support.
+*   **oneDPL (oneAPI Data Parallel C++ Library):** Required for multi-threading support on macOS with Clang.
+*   **GCC (on macOS):** Due to limitations in Apple's Clang compiler regarding C++ parallel execution, it is recommended to use GCC on macOS.
+
+You can install the dependencies on a Debian-based system with:
+
+```bash
+sudo apt-get install build-essential cmake libssl-dev libtbb-dev
+```
+
+On macOS, you can use Homebrew:
+
+```bash
+brew install cmake openssl tbb onedpl gcc
+```
+
+### Building
+
+1.  Clone the repository:
+
+    ```bash
+    git clone https://github.com/cauaeyer/deduplicate-cli.git
+    cd deduplicate-cli
+    ```
+
+2.  Create a build directory:
+
+    ```bash
+    mkdir build
+    ```
+
+3.  Run CMake and build the project.
+
+    **On Linux:**
+
+    ```bash
+    cmake -G Ninja -B build && ninja -C build
+    ```
+
+    **On macOS (with GCC):**
+
+    ```bash
+    CC=$(brew --prefix)/bin/gcc-15 CXX=$(brew --prefix)/bin/g++-15 cmake -G Ninja -B build && ninja -C build
+    ```
+    (Replace `gcc-15` and `g++-15` with your installed GCC version if different)
+
+The executable will be created in the `build` directory with the name `deduplicate`.
 
 ## Contributing
 
