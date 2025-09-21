@@ -1,4 +1,6 @@
 #include "nodupli.h"
+#include <algorithm>
+#include <execution>
 
 using namespace std;
 
@@ -34,14 +36,14 @@ main(int argc, char* argv[])
     std::cout << "Scanning directory: " << target_path.string() << "\n\n"; 
 
   cout << R"(
-      _          _             _ _           _       _       
-     | |        | |           | (_)         | |     | |      
-   __| | ___  __| |_   _ _ __ | |_  ___ __ _| |_ ___| |      
+      _          _             _ _           _       _ 
+     | |        | |           | (_)         | |     | |
+   __| | ___  __| |_   _ _ __ | |_  ___ __ _| |_ ___| |
   / _` |/ _ \/ _` | | | | '_ \| | |/ __/ _` | __/ _ \ |
  | (_| |  __/ (_| | |_| | |_) | | | (_| (_| | ||  __/_|
   \__,_|\___|\__,_|\__,_| .__/|_|_|\___\__,_|\__\___(_)
                         | |                            
-                        |_|                            
+                        |_| 
   )" << '\n';
   cout << '\n';
 
@@ -60,7 +62,13 @@ main(int argc, char* argv[])
     return 0;
   }
 
-  auto hash_map = build_hash_map(paths_to_hash);
+  std::cout << "Hashing on multiple threads ..." << '\n';
+  std::for_each(
+    std::execution::par,
+    paths_to_hash.begin(),
+    paths_to_hash.end(),
+    process_hash
+  );
 
   interactive_interface(hash_map);
 

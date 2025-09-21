@@ -3,8 +3,13 @@
 #include <openssl/evp.h>
 #include <sstream>
 #include <iomanip>
+#include <execution> 
+#include <mutex>
 
 using namespace std;
+
+std::mutex map_mutex;
+HashMap hash_map;
 
 std::string 
 calculate_sha256_openssl(const fs::path& file_path) 
@@ -64,21 +69,19 @@ calculate_sha256_openssl(const fs::path& file_path)
 }
 
 
-HashMap
-build_hash_map(const PathVector& paths_to_hash)
+void
+process_hash(const fs::path& path)
 {
-  HashMap hash_map;
+  auto sha = calculate_sha256_openssl(path);
 
-  for(const auto& path : paths_to_hash){
-    auto sha = calculate_sha256_openssl(path);
+  if(!sha.empty()){
 
-    if(!sha.empty()){
-      hash_map[sha].push_back(path);
-    }
+    std::lock_guard<std::mutex> guard(map_mutex);
+
+    hash_map[sha].push_back(path);
   }
-
-  return hash_map;
 }
+
 
 SizeMap
 build_size_map(const fs::path& target_path)
