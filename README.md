@@ -92,6 +92,20 @@ brew install cmake openssl tbb onedpl gcc
 
 The executable will be created in the `build` directory with the name `deduplicate`.
 
+### Some Commands:
+
+To add to system's Path (or automatically install in any other path of your machine)
+
+```bash
+cmake --install build --component Binary --prefix <path>
+```
+
+To create zip file
+
+```bash
+cpack --config build/CPackConfig.cmake
+```
+
 ## Contributing
 
 Contributions are welcome! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
